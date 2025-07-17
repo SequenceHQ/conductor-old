@@ -3,8 +3,6 @@ name: Build and Push Docker Image (Non-prod only for now)
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}

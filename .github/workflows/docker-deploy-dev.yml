@@ -49,5 +49,4 @@ jobs:
         region: europe-west2
         project_id: ${{ env.PROJECT_ID }}
         gcloud_component: beta
-        metadata: metadata.yaml
         suffix: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ env.TAG }}
