@@ -6,8 +6,7 @@ on:
     types:
       - completed
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+
 env:
   NON_PRODUCTION_PROJECT_ID: ${{ secrets.GCP_NON_PROD_PROJECT_ID }}
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
