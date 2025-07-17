@@ -41,6 +41,7 @@ jobs:
 
     - name: Build Docker image
       run: |
+        cd docker
         docker build --platform linux/amd64 -t conductor:server -f server/Dockerfile ../
 
     - name: Tag and Push Docker image to Google Artifact Registry
