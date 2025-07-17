@@ -9,6 +9,7 @@ on:
   pull_request:
     branches: [ main ]
 env:
+  NON_PRODUCTION_PROJECT_ID: ${{ secrets.GCP_NON_PROD_PROJECT_ID }}
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   GAR_LOCATION: ${{ secrets.GAR_LOCATION }}
   REPOSITORY: ${{ secrets.GAR_REPOSITORY }}
@@ -47,7 +48,7 @@ jobs:
       uses: 'google-github-actions/deploy-cloudrun@v2'
       with:
         region: europe-west2
-        project_id: ${{ env.PROJECT_ID }}
+        project_id: ${{ env.NON_PRODUCTION_PROJECT_ID }}
         gcloud_component: beta
         image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ env.TAG }}
         service: ${{ env.SERVICE }}
