@@ -1,0 +1,24 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Build Docker image
+      run: |
+        cd docker
+        docker build --platform linux/amd64 -t conductor:server -f server/Dockerfile ../
+
+    - name: Verify Docker image
+      run: |
+        docker images conductor:server
