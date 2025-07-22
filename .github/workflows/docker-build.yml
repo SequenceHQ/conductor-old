@@ -1,0 +1,48 @@
+name: Build and Push Docker Image (Non-prod only for now)
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GAR_LOCATION: ${{ secrets.GAR_LOCATION }}
+  REPOSITORY: ${{ secrets.GAR_REPOSITORY }}
+  IMAGE: conductor
+  TAG: server
+
+permissions:
+  contents: 'read'
+  id-token: 'write'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Google Auth
+      id: auth
+      uses: 'google-github-actions/auth@v2.1.2'
+      with:
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+        service_account: ${{ secrets.SERVICE_ACCOUNT }}
+        token_format: 'access_token'
+
+    - name: Configure Docker to use gcloud as a credential helper
+      run: |
+        gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
+
+    - name: Build Docker image
+      run: |
+        cd docker
+        docker build --platform linux/amd64 -t conductor:server -f server/Dockerfile ../
+
+    - name: Tag and Push Docker image to Google Artifact Registry
+      run: |
+        docker tag conductor:server ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ env.TAG }}
+        docker push ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ env.TAG }}
